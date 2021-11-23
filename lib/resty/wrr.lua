@@ -1,11 +1,9 @@
 -- Copyright (C) vislee
 
-local cjson = require "cjson.safe"
-local json_encode  = cjson.encode
-
+-- local cjson = require "cjson.safe"
+-- local json_encode  = cjson.encode
 local ngx_now = ngx.now
 local math_floor = math.floor
-
 local PEER_FAILED = 1
 local _M = {PEER_FAILED = PEER_FAILED}
 local mt = { __index = _M }
@@ -13,15 +11,15 @@ local mt = { __index = _M }
 --[[
 servers = {
 {
-  addr = "",
-  weight = 0,
+  addr = "192.168.0.1:80",
+  weight = 1,
   max_conns = 0,
   max_fails = 0,
   fail_timeout = 0,
 },
 {
-  addr = "",
-  weight = 0,
+  addr = "192.168.0.2:80",
+  weight = 1,
   max_conns = 0,
   max_fails = 0,
   fail_timeout = 0,
@@ -35,21 +33,21 @@ function _M.new(servers)
 
     local tries = 0
     local peers = {}
-    for x, peer in ipairs(servers) do
-        local p = {}
-        p["addr"] = peer["addr"]
-        p["weight"] = peer["weight"] or 1
-        p["effective_weight"] = p["weight"]
-        p["current_weight"] = 0
-        p["max_conns"] = peer["max_conns"] or 0
-        p["max_fails"] = peer["max_fails"] or 0
-        p["fail_timeout"] = peer["fail_timeout"] or 0
-        p["conns"] = 0
-        p["accessed"] = 0
-        p["fails"] = 0
-        p["checked"] = 0
+    for n, s in ipairs(servers) do
+        local peer = {}
+        peer["addr"] = s["addr"]
+        peer["weight"] = s["weight"] or 1
+        peer["effective_weight"] = s["weight"]
+        peer["current_weight"] = 0
+        peer["max_conns"] = s["max_conns"] or 0
+        peer["max_fails"] = s["max_fails"] or 0
+        peer["fail_timeout"] = s["fail_timeout"] or 0
+        peer["conns"] = 0
+        peer["accessed"] = 0
+        peer["fails"] = 0
+        peer["checked"] = 0
 
-        peers[x] = p
+        peers[n] = peer
         tries = tries + 1
     end
 
@@ -67,9 +65,9 @@ function _M.init(self, tries)
 end
 
 
-function _M.debug(self)
-    return json_encode(self.peers)
-end
+-- function _M.debug(self)
+--     return json_encode(self.peers)
+-- end
 
 
 function _M.get(self)
@@ -141,6 +139,10 @@ function _M.free(self, state)
 
         if peer.max_fails > 0 then
             peer.effective_weight = peer.effective_weight - math_floor(peer.weight/peer.max_fails)
+
+            if peer.fails >= peer.max_fails then
+                ngx.log(ngx.WARN, "wrr server temporarily disabled");
+            end
         end
 
         if peer.effective_weight < 0 then
@@ -153,6 +155,10 @@ function _M.free(self, state)
     end
 
     peer.conns = peer.conns - 1
+
+    if self.tries > 0 then
+        self.tries = self.tries - 1
+    end
 end
 
 
