@@ -57,7 +57,7 @@ Methods
 
 new
 ---
-`syntax: rrp = wrr.new(servers)`
+`syntax: rrp, err = wrr.new(servers)`
 
 Creates a wrr object by `servers`. the failures, returns `nil` and error.
 
