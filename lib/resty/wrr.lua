@@ -35,7 +35,7 @@ function _M.new(servers)
     local peers = {}
     for n, s in ipairs(servers) do
         local peer = {}
-        peer["addr"] = s["addr"]
+        peer["server"] = s
         peer["weight"] = s["weight"] or 1
         peer["effective_weight"] = s["weight"]
         peer["current_weight"] = 0

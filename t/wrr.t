@@ -39,7 +39,7 @@ __DATA__
 
             local peer = rrp:init()
             local s = peer:get()
-            ngx.print("server: ", (s and s.addr))
+            ngx.print("server: ", (s and s.server.addr))
             peer:free(0)
             ngx.exit(ngx.HTTP_OK)
         }
@@ -84,7 +84,7 @@ GET /t
             for i = 1, 3 do
                 if peer.tries > 0 then
                     local s = peer:get()
-                    ngx.print("server: ", (s and s.addr), ".")
+                    ngx.print("server: ", (s and s.server.addr), ".")
                     peer:free(wrr.PEER_FAILED)
                 else
                     ngx.print(" server: tries 0")
@@ -130,17 +130,17 @@ GET /t
 
             local peer1 = rrp:init(2)
             local s = peer1:get()
-            ngx.print("server: ", (s and s.addr), ".")
+            ngx.print("server: ", (s and s.server.addr), ".")
 
             local peer2 = rrp:init(2)
             s = peer2:get()
-            ngx.print("server: ", (s and s.addr), ".")
+            ngx.print("server: ", (s and s.server.addr), ".")
 
             peer1:free(wrr.PEER_FAILED)
 
             local peer3 = rrp:init(2)
             s = peer3:get()
-            ngx.print("server: ", (s and s.addr), ".")
+            ngx.print("server: ", (s and s.server.addr), ".")
 
             peer2:free(wrr.PEER_FAILED)
             peer3:free(wrr.PEER_FAILED)
@@ -185,23 +185,23 @@ GET /t
 
             local peer1 = rrp:init()
             local s = peer1:get()
-            ngx.print("server: ", (s and s.addr), ".")
+            ngx.print("server: ", (s and s.server.addr), ".")
             peer1:free(wrr.PEER_FAILED)
 
             local peer2 = rrp:init()
             local s = peer2:get()
-            ngx.print("server: ", (s and s.addr), ".")
+            ngx.print("server: ", (s and s.server.addr), ".")
             peer2:free(wrr.PEER_FAILED)
 
             local peer3 = rrp:init()
             local s = peer3:get()
-            ngx.print("server: ", (s and s.addr), ".")
+            ngx.print("server: ", (s and s.server.addr), ".")
             peer3:free(wrr.PEER_FAILED)
 
             ngx.sleep(1)
             local peer4 = rrp:init()
             local s = peer4:get()
-            ngx.print("server: ", (s and s.addr), ".")
+            ngx.print("server: ", (s and s.server.addr), ".")
             peer3:free()
 
             ngx.exit(ngx.HTTP_OK)
