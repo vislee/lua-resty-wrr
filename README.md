@@ -57,7 +57,7 @@ Methods
 
 new
 ---
-`syntax: rrp = wrr.new(servers)`
+`syntax: rrp, err = wrr.new(servers)`
 
 Creates a wrr object by `servers`. the failures, returns `nil` and error.
 
@@ -82,7 +82,7 @@ free
 ----
 `syntax: peer:free(state?)`
 
-Free the pick server and report a health failure, the `state` is wrr.PEER_FAILED(failed) or 0(OK).
+Free the pick server and report a health failure, the `state` is `wrr.PEER_FAILED`(failed) or 0(OK).
 
 
 [Back to TOC](#table-of-contents)
